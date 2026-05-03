@@ -83,4 +83,78 @@ class DatabaseHelper {
     final db = await database;
     await db.delete('time_records', where: 'id = ?', whereArgs: [id]);
   }
+
+  Future<void> seedSampleData() async {
+    final existing = await getAllRecords();
+    if (existing.isNotEmpty) return;
+
+    final now = DateTime.now();
+    final weekStart = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - 1));
+
+    final sampleRecords = <TimeRecord>[
+      TimeRecord(
+        checkIn: DateTime(
+          weekStart.year,
+          weekStart.month,
+          weekStart.day,
+          9,
+          0,
+        ).millisecondsSinceEpoch,
+        checkOut: DateTime(
+          weekStart.year,
+          weekStart.month,
+          weekStart.day,
+          17,
+          0,
+        ).millisecondsSinceEpoch,
+      ),
+      TimeRecord(
+        checkIn: DateTime(
+          weekStart.year,
+          weekStart.month,
+          weekStart.day + 1,
+          9,
+          20,
+        ).millisecondsSinceEpoch,
+        checkOut: DateTime(
+          weekStart.year,
+          weekStart.month,
+          weekStart.day + 1,
+          17,
+          10,
+        ).millisecondsSinceEpoch,
+      ),
+      TimeRecord(
+        checkIn: DateTime(
+          weekStart.year,
+          weekStart.month,
+          weekStart.day + 2,
+          8,
+          45,
+        ).millisecondsSinceEpoch,
+        checkOut: DateTime(
+          weekStart.year,
+          weekStart.month,
+          weekStart.day + 2,
+          16,
+          50,
+        ).millisecondsSinceEpoch,
+      ),
+    ];
+
+    if (now.weekday <= 5) {
+      sampleRecords.add(
+        TimeRecord(
+          checkIn: DateTime(now.year, now.month, now.day, 10, 0)
+              .millisecondsSinceEpoch,
+          checkOut: null,
+        ),
+      );
+    }
+
+    for (final record in sampleRecords) {
+      await insertRecord(record);
+    }
+  }
 }

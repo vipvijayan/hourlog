@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../models/time_record.dart';
 import '../database/database_helper.dart';
 
@@ -18,15 +18,87 @@ class TimeProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
+      await DatabaseHelper.instance.seedSampleData();
       _activeRecord = await DatabaseHelper.instance.getActiveRecord();
       _records = await DatabaseHelper.instance.getAllRecords();
       _error = null;
     } catch (e) {
-      _error = 'Failed to load data. Please restart the app.';
+      if (kIsWeb) {
+        _records = _sampleRecords();
+        _activeRecord = _records.firstWhere(
+          (record) => record.isActive,
+          orElse: () => _records.isNotEmpty ? _records.first : _records.first,
+        );
+        _error = null;
+      } else {
+        _error = 'Failed to load data. Please restart the app.';
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  List<TimeRecord> _sampleRecords() {
+    final now = DateTime.now();
+    final currentWeekMonday = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - 1));
+
+    return [
+      TimeRecord(
+        checkIn: DateTime(
+          currentWeekMonday.year,
+          currentWeekMonday.month,
+          currentWeekMonday.day,
+          9,
+          0,
+        ).millisecondsSinceEpoch,
+        checkOut: DateTime(
+          currentWeekMonday.year,
+          currentWeekMonday.month,
+          currentWeekMonday.day,
+          17,
+          30,
+        ).millisecondsSinceEpoch,
+      ),
+      TimeRecord(
+        checkIn: DateTime(
+          currentWeekMonday.year,
+          currentWeekMonday.month,
+          currentWeekMonday.day + 1,
+          9,
+          15,
+        ).millisecondsSinceEpoch,
+        checkOut: DateTime(
+          currentWeekMonday.year,
+          currentWeekMonday.month,
+          currentWeekMonday.day + 1,
+          17,
+          0,
+        ).millisecondsSinceEpoch,
+      ),
+      TimeRecord(
+        checkIn: DateTime(
+          currentWeekMonday.year,
+          currentWeekMonday.month,
+          currentWeekMonday.day + 2,
+          8,
+          45,
+        ).millisecondsSinceEpoch,
+        checkOut: DateTime(
+          currentWeekMonday.year,
+          currentWeekMonday.month,
+          currentWeekMonday.day + 2,
+          16,
+          50,
+        ).millisecondsSinceEpoch,
+      ),
+      TimeRecord(
+        checkIn: DateTime(now.year, now.month, now.day, 10, 0)
+            .millisecondsSinceEpoch,
+        checkOut: null,
+      ),
+    ];
   }
 
   void clearError() {

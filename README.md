@@ -12,6 +12,13 @@ Whether you want a minimal personal time logger or a clean example of Provider +
 - Simple check-in / check-out flow with history, editing, and per-day/week/month totals.
 - Dependency-free UI widgets where possible; provider-based state management.
 - Focused on clarity — easy to read and extend for new features.
+- Includes seeded sample records for a ready-to-run demo experience on fresh installs.
+
+---
+
+## 📸 Screenshot
+
+![HourLog sample view](screenshots/hourlog-sample.png)
 
 ---
 
@@ -28,6 +35,8 @@ Run locally:
 flutter pub get
 flutter run
 ```
+
+> On an untouched install, the app seeds a few sample time records automatically so you can explore the UI without manual data entry.
 
 Run static analysis:
 
