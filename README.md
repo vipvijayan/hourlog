@@ -16,11 +16,11 @@ Whether you want a minimal personal time logger or a clean example of Provider +
 
 ---
 
-## 📸 Screenshot
+## 📸 Screenshots
 
-![HourLog sample view](screenshots/hourlog-sample.png)
+![HourLog iOS Home screen](screenshots/hourlog-ios-sample.png)
 
-![HourLog iOS sample view](screenshots/hourlog-ios-sample.png)
+![HourLog Work History screen](screenshots/hourlog-history.png)
 
 ---
 
