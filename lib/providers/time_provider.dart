@@ -41,8 +41,11 @@ class TimeProvider extends ChangeNotifier {
 
   List<TimeRecord> _sampleRecords() {
     final now = DateTime.now();
-    final currentWeekMonday = DateTime(now.year, now.month, now.day)
-        .subtract(Duration(days: now.weekday - 1));
+    final currentWeekMonday = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
 
     return [
       TimeRecord(
@@ -94,8 +97,13 @@ class TimeProvider extends ChangeNotifier {
         ).millisecondsSinceEpoch,
       ),
       TimeRecord(
-        checkIn: DateTime(now.year, now.month, now.day, 10, 0)
-            .millisecondsSinceEpoch,
+        checkIn: DateTime(
+          now.year,
+          now.month,
+          now.day,
+          10,
+          0,
+        ).millisecondsSinceEpoch,
         checkOut: null,
       ),
     ];

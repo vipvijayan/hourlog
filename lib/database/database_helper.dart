@@ -89,8 +89,11 @@ class DatabaseHelper {
     if (existing.isNotEmpty) return;
 
     final now = DateTime.now();
-    final weekStart = DateTime(now.year, now.month, now.day)
-        .subtract(Duration(days: now.weekday - 1));
+    final weekStart = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
 
     final sampleRecords = <TimeRecord>[
       TimeRecord(
@@ -146,8 +149,13 @@ class DatabaseHelper {
     if (now.weekday <= 5) {
       sampleRecords.add(
         TimeRecord(
-          checkIn: DateTime(now.year, now.month, now.day, 10, 0)
-              .millisecondsSinceEpoch,
+          checkIn: DateTime(
+            now.year,
+            now.month,
+            now.day,
+            10,
+            0,
+          ).millisecondsSinceEpoch,
           checkOut: null,
         ),
       );

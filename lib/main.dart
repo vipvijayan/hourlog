@@ -8,7 +8,10 @@ import 'screens/history_screen.dart';
 import 'widgets/edit_record_dialog.dart';
 import 'dart:io' show Platform;
 
-const _kStartScreen = String.fromEnvironment('START_SCREEN', defaultValue: 'home');
+const _kStartScreen = String.fromEnvironment(
+  'START_SCREEN',
+  defaultValue: 'home',
+);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,8 +42,8 @@ class MyApp extends StatelessWidget {
       home: _kStartScreen == 'history'
           ? const HistoryScreen()
           : _kStartScreen == 'edit'
-              ? const _EditScreenLauncher()
-              : const HomeScreen(),
+          ? const _EditScreenLauncher()
+          : const HomeScreen(),
     );
   }
 }
