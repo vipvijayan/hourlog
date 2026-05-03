@@ -18,9 +18,13 @@ Whether you want a minimal personal time logger or a clean example of Provider +
 
 ## 📸 Screenshots
 
+Below are smaller, optimized examples of the app screens for quick preview.
+
 ![HourLog iOS Home screen](screenshots/hourlog-ios-sample.png)
 
 ![HourLog Work History screen](screenshots/hourlog-history.png)
+
+![HourLog Compact web preview](screenshots/hourlog-web-small.png)
 
 ---
 
