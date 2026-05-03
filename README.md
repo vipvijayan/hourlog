@@ -20,6 +20,8 @@ Whether you want a minimal personal time logger or a clean example of Provider +
 
 ![HourLog sample view](screenshots/hourlog-sample.png)
 
+![HourLog iOS sample view](screenshots/hourlog-ios-sample.png)
+
 ---
 
 ## 🚀 Quick Start
