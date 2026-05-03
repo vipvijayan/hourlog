@@ -4,7 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'providers/time_provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/history_screen.dart';
+import 'widgets/edit_record_dialog.dart';
 import 'dart:io' show Platform;
+
+const _kStartScreen = String.fromEnvironment('START_SCREEN', defaultValue: 'home');
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +36,37 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: const HomeScreen(),
+      home: _kStartScreen == 'history'
+          ? const HistoryScreen()
+          : _kStartScreen == 'edit'
+              ? const _EditScreenLauncher()
+              : const HomeScreen(),
     );
+  }
+}
+
+class _EditScreenLauncher extends StatefulWidget {
+  const _EditScreenLauncher({super.key});
+
+  @override
+  State<_EditScreenLauncher> createState() => _EditScreenLauncherState();
+}
+
+class _EditScreenLauncherState extends State<_EditScreenLauncher> {
+  bool _dialogShown = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<TimeProvider>(context);
+
+    if (!_dialogShown && !provider.isLoading && provider.records.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        _dialogShown = true;
+        await showEditRecordDialog(context, provider.records.first);
+      });
+    }
+
+    return const HomeScreen();
   }
 }

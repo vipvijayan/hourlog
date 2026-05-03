@@ -16,19 +16,19 @@ Whether you want a minimal personal time logger or a clean example of Provider +
 
 ---
 
-## 📸 Screenshots
+## 📸 iOS Screenshots
 
-Below are smaller, optimized examples of the app screens for quick preview.
+<div>
+  <img src="screenshots/hourlog-ios-home.png" width="280" alt="HourLog iOS Home screen" />
+  <img src="screenshots/hourlog-ios-history.png" width="280" alt="HourLog iOS History screen" />
+  <img src="screenshots/hourlog-ios-edit.png" width="280" alt="HourLog iOS Edit dialog" />
+</div>
 
-![HourLog iOS Home screen](screenshots/hourlog-ios-sample.png)
-
-![HourLog Work History screen](screenshots/hourlog-history.png)
-
-![HourLog Compact web preview](screenshots/hourlog-web-small.png)
+<small>Rendered smaller for quick preview in the README.</small>
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 Prerequisites:
 
@@ -55,22 +55,6 @@ Run tests (if any):
 ```bash
 flutter test
 ```
-
----
-
-## 🔍 Project Structure (high level)
-
-- `lib/main.dart` — app entry and theme setup. ([lib/main.dart](lib/main.dart))
-- `lib/screens/home_screen.dart` — main UI, app lifecycle, and animation controller. ([lib/screens/home_screen.dart](lib/screens/home_screen.dart))
-- `lib/screens/components/home_screen_components.dart` — extracted stateless UI components used by the home screen (AppBar, status card, action button, summary widgets). ([lib/screens/components/home_screen_components.dart](lib/screens/components/home_screen_components.dart))
-- `lib/widgets/weekly_bar_chart.dart` — small dependency-free bar chart for Mon–Fri. ([lib/widgets/weekly_bar_chart.dart](lib/widgets/weekly_bar_chart.dart))
-- `lib/widgets/edit_record_dialog.dart` — dialog used to edit a time entry. ([lib/widgets/edit_record_dialog.dart](lib/widgets/edit_record_dialog.dart))
-- `lib/providers/time_provider.dart` — app state, persistence orchestration and helpers. ([lib/providers/time_provider.dart](lib/providers/time_provider.dart))
-- `lib/models/time_record.dart` — data model for time records. ([lib/models/time_record.dart](lib/models/time_record.dart))
-- `lib/database/database_helper.dart` — small `sqflite` wrapper for persistence. ([lib/database/database_helper.dart](lib/database/database_helper.dart))
-- `lib/utils/duration_formatter.dart` — human-friendly duration formatting helpers. ([lib/utils/duration_formatter.dart](lib/utils/duration_formatter.dart))
-
----
 
 ## 🧭 How it works (overview)
 
