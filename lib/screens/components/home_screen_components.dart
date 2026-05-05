@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -41,7 +43,7 @@ class HomeAppBar extends StatelessWidget {
   }
 }
 
-class StatusCard extends StatelessWidget {
+class StatusCard extends StatefulWidget {
   final bool isCheckedIn;
   final TimeRecord? activeRecord;
   final Animation<double> pulseAnimation;
@@ -56,14 +58,57 @@ class StatusCard extends StatelessWidget {
   });
 
   @override
+  State<StatusCard> createState() => _StatusCardState();
+}
+
+class _StatusCardState extends State<StatusCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTimer();
+  }
+
+  @override
+  void didUpdateWidget(covariant StatusCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isCheckedIn != oldWidget.isCheckedIn ||
+        widget.activeRecord?.checkInTime !=
+            oldWidget.activeRecord?.checkInTime) {
+      _updateTimer();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _updateTimer() {
+    _timer?.cancel();
+    if (widget.isCheckedIn && widget.activeRecord != null) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (mounted) setState(() {});
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final dateStr = DateFormat('EEEE, MMMM d').format(now);
     final colorScheme = Theme.of(context).colorScheme;
-    final cardColor = isCheckedIn ? colorScheme.primary : colorScheme.surface;
-    final textColor = isCheckedIn
+    final cardColor = widget.isCheckedIn
+        ? colorScheme.primary
+        : colorScheme.surface;
+    final textColor = widget.isCheckedIn
         ? colorScheme.onPrimary
         : colorScheme.onSurface;
+    final elapsed = widget.activeRecord != null
+        ? now.difference(widget.activeRecord!.checkInTime)
+        : Duration.zero;
 
     return Card(
       color: cardColor,
@@ -85,18 +130,18 @@ class StatusCard extends StatelessWidget {
             Row(
               children: [
                 ScaleTransition(
-                  scale: isCheckedIn
-                      ? pulseAnimation
+                  scale: widget.isCheckedIn
+                      ? widget.pulseAnimation
                       : const AlwaysStoppedAnimation(1.0),
                   child: Container(
                     width: 14,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: isCheckedIn
+                      color: widget.isCheckedIn
                           ? Colors.greenAccent
                           : Colors.grey.shade400,
                       shape: BoxShape.circle,
-                      boxShadow: isCheckedIn
+                      boxShadow: widget.isCheckedIn
                           ? [
                               BoxShadow(
                                 color: Colors.greenAccent.withValues(
@@ -112,7 +157,7 @@ class StatusCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  isCheckedIn ? 'Currently Working' : 'Not Checked In',
+                  widget.isCheckedIn ? 'Currently Working' : 'Not Checked In',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 20,
@@ -121,20 +166,21 @@ class StatusCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (isCheckedIn && activeRecord != null) ...[
+            if (widget.isCheckedIn && widget.activeRecord != null) ...[
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Text(
-                    'Since ${DateFormat('hh:mm a').format(activeRecord!.checkInTime)}',
-                    style: TextStyle(
-                      color: textColor.withValues(alpha: 0.85),
-                      fontSize: 14,
+                  Expanded(
+                    child: Text(
+                      'Since ${DateFormat('hh:mm a').format(widget.activeRecord!.checkInTime)}',
+                      style: TextStyle(
+                        color: textColor.withValues(alpha: 0.85),
+                        fontSize: 14,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 6),
                   GestureDetector(
-                    onTap: onEdit,
+                    onTap: widget.onEdit,
                     child: Icon(
                       Icons.edit_outlined,
                       size: 15,
@@ -142,6 +188,14 @@ class StatusCard extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Duration ${formatDurationFull(elapsed)}',
+                style: TextStyle(
+                  color: textColor.withValues(alpha: 0.85),
+                  fontSize: 14,
+                ),
               ),
             ],
           ],

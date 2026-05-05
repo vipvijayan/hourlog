@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import '../models/time_record.dart';
 import '../providers/time_provider.dart';
 
-/// Simple, dependency-free bar chart for Mon–Fri of the previous calendar week.
+/// Simple, dependency-free bar chart for the two previous work weeks (Mon–Fri).
 class WeeklyBarChart extends StatelessWidget {
   final TimeProvider provider;
   const WeeklyBarChart({required this.provider, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final data = _computeLastWorkWeek(provider.records);
-    final values = List<double>.generate(5, (i) => data[i] ?? 0.0);
-    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    final values = _computeLastTwoWorkWeeks(provider.records);
+    final labels = _buildLabels();
     final maxVal = values.isEmpty
         ? 0.0
         : values.reduce((a, b) => a > b ? a : b);
@@ -28,7 +27,7 @@ class WeeklyBarChart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Last Week (Mon–Fri)',
+              'Last 2 Weeks (Mon–Fri)',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.grey.shade800,
@@ -36,10 +35,10 @@ class WeeklyBarChart extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             SizedBox(
-              height: maxBarHeight + 48,
+              height: maxBarHeight + 58,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(5, (i) {
+                children: List.generate(values.length, (i) {
                   final v = values[i];
                   final barHeight = maxVal > 0
                       ? (v / maxVal) * maxBarHeight
@@ -68,7 +67,7 @@ class WeeklyBarChart extends StatelessWidget {
                           const SizedBox(height: 6),
                           Container(
                             height: barHeight,
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primary,
                               borderRadius: BorderRadius.circular(6),
@@ -77,8 +76,9 @@ class WeeklyBarChart extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text(
                             labels[i],
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 10,
                               color: Colors.grey.shade600,
                             ),
                           ),
@@ -95,20 +95,19 @@ class WeeklyBarChart extends StatelessWidget {
     );
   }
 
-  /// Returns a map of dayIndex (0=Mon..4=Fri) -> hours for the previous calendar week (Mon..Fri)
-  Map<int, double> _computeLastWorkWeek(List<TimeRecord> records) {
+  List<double> _computeLastTwoWorkWeeks(List<TimeRecord> records) {
     final now = DateTime.now();
     final currentWeekStart = DateTime(
       now.year,
       now.month,
       now.day,
     ).subtract(Duration(days: now.weekday - 1));
-    final lastWeekMonday = currentWeekStart.subtract(const Duration(days: 7));
+    final firstWeekStart = currentWeekStart.subtract(const Duration(days: 14));
 
-    final Map<int, double> totals = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0};
+    final totals = List<double>.filled(10, 0.0);
 
-    for (int i = 0; i < 5; i++) {
-      final day = lastWeekMonday.add(Duration(days: i));
+    for (int index = 0; index < 10; index++) {
+      final day = firstWeekStart.add(Duration(days: index + (index ~/ 5 * 2)));
       final start = DateTime(day.year, day.month, day.day);
       final end = start.add(const Duration(days: 1));
 
@@ -123,9 +122,14 @@ class WeeklyBarChart extends StatelessWidget {
           )
           .fold<int>(0, (sum, r) => sum + r.duration!.inMinutes);
 
-      totals[i] = totalMinutes / 60.0;
+      totals[index] = totalMinutes / 60.0;
     }
 
     return totals;
+  }
+
+  List<String> _buildLabels() {
+    const shortDays = ['M', 'T', 'W', 'T', 'F'];
+    return [for (final day in shortDays) day, for (final day in shortDays) day];
   }
 }
